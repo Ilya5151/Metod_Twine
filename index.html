@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Визуальная новелла: Собеседование в лаборатории</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 1024px;
+            height: 100%;
+            max-height: 576px;
+            background-image: url('images/background_lab.png');
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        #character-container {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 75%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            pointer-events: none;
+        }
+
+        .character {
+            height: 100%;
+            object-fit: contain;
+            transition: opacity 0.5s ease;
+        }
+
+        #dialogue-box {
+            position: relative;
+            margin: 20px;
+            padding: 25px;
+            background: rgba(20, 20, 20, 0.95);
+            border: 2px solid #4a90e2;
+            border-radius: 10px;
+            min-height: 160px;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        #character-name {
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 12px;
+            font-size: 1.4em;
+        }
+
+        #dialogue-text {
+            font-size: 1.3em; /* Крупный и читаемый текст */
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        #choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .choice-btn {
+            background: rgba(74, 144, 226, 0.15);
+            border: 1px solid #4a90e2;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.15em;
+            text-align: left;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+        .choice-btn:hover {
+            background: rgba(74, 144, 226, 0.4);
+            transform: translateX(5px);
+        }
+
+        .next-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.85em;
+            color: #888;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="character-container">
+            <img id="active-character" class="character" src="images/character_boss.png" alt="Персонаж">
+        </div>
+
+        <div id="dialogue-box">
+            <div id="character-name">Босс</div>
+            <div id="dialogue-text">Загрузка протоколов...</div>
+            <div id="choices-container"></div>
+            <div id="click-hint" class="next-hint" style="display:none;">Нажмите для продолжения...</div>
+        </div>
+    </div>
+
+    <script>
+        const story = {
+            start: {
+                name: "Босс",
+                text: "Ну что, добро пожаловать в лабораторию. Прежде чем я доверю тебе пульт от сервера, устроим небольшую проверку. Готов?",
+                character: "images/character_boss.png",
+                type: "question",
+                choices: [
+                    { text: "Готов, шеф! Спрашивайте.", nextStep: "q1" },
+                    { text: "Постараюсь не ударить в грязь лицом...", nextStep: "q1" }
+                ]
+            },
+            // ВОПРОС 1
+            q1: {
+                name: "Босс",
+                text: "Первый вопрос, базовый. На каком уровне модели OSI работает обычный IP-адрес и маршрутизаторы?",
+                character: "images/character_boss.png",
+                type: "question",
+                choices: [
+                    { text: "На Канальном (Data Link, уровень 2)", nextStep: "q1_wrong" },
+                    { text: "На Сетевом (Network, уровень 3)", nextStep: "q1_correct" },
+                    { text: "На Транспортном (Transport, уровень 4)", nextStep: "q1_wrong" }
+                ]
+            },
+            q1_correct: {
+                name: "Босс",
+                text: "Верно! Сразу видно, что теорию не прогуливал. Ладно, усложняем задачу.",
+                character: "images/character_boss.png",
+                type: "dialogue",
+                nextStep: "q2"
+            },
+            q1_wrong: {
+                name: "Босс",
+                text: "Мимо. Коммутаторы плачут в углу от такого ответа. Правильный ответ — Сетевой уровень. Но ладно, едем дальше.",
+                character: "images/character_boss.png",
+                type: "dialogue",
+                nextStep: "q2"
+            },
+            // ВОПРОС 2
+            q2: {
+                name: "Босс",
+                text: "Что происходит в сети, когда один хост отправляет ARP-запрос, чтобы узнать MAC-адрес соседа?",
+                character: "images/character_boss.png",
+                type: "question",
+                choices: [
+                    { text: "Запрос отправляется направленно (Unicast) конкретному узлу", nextStep: "q2_wrong" },
+                    { text: "Запрос отправляется всем в сегменте сети (Broadcast)", nextStep: "q2_correct" }
+                ]
+            },
+            q2_correct: {
+                name: "Босс",
+                text: "Точно! Широковещательный запрос на `FF:FF:FF:FF:FF:FF`. Хорош. Финальный вопрос, на засыпку.",
+                character: "images/character_boss.png",
+                type: "dialogue",
+                nextStep: "q3"
+            },
+            q2_wrong: {
+                name: "Босс",
+                text: "Эх, нет. Откуда же он знает, кому слать Unicast, если он только Пытается узнать MAC? Он кричит на всю сеть! Ладно, последний шанс.",
+                character: "images/character_boss.png",
+                type: "dialogue",
+                nextStep: "q3"
+            },
+            // ВОПРОС 3
+            q3: {
+                name: "Босс",
+                text: "В чем главное концептуальное отличие протокола TCP от UDP?",
+                character: "images/character_boss.png",
+                type: "question",
+                choices: [
+                    { text: "TCP гарантирует доставку данных и сохраняет их порядок, а UDP просто шлет пакеты без оглядки.", nextStep: "q3_correct" },
+                    { text: "UDP намного надежнее, но работает медленнее, чем TCP.", nextStep: "q3_wrong" }
+                ]
+            },
+            q3_correct: {
+                name: "Босс",
+                text: "Великолепно! Трёхэтапное рукопожатие, контроль потока... Ты действительно соображаешь.",
+                character: "images/character_boss.png",
+                type: "dialogue",
+                nextStep: "final"
+            },
+            q3_wrong: {
+                name: "Босс",
+                text: "Всё с точностью до наоборот! UDP — это «выстрелил и забыл». Ладно, на практике доучишься, деваться нам некуда.",
+                character: "images/character_boss.png",
+                type: "dialogue",
+                nextStep: "final"
+            },
+            // ФИНАЛ
+            final: {
+                name: "Босс",
+                text: "Что ж, экспресс-тест окончен. Забирай свой пропуск, подключайся к консоли и давай наводить здесь порядок. Добро пожаловать в команду!",
+                character: "images/character_boss.png",
+                type: "dialogue",
+                nextStep: "real_end"
+            },
+            real_end: {
+                name: "Система",
+                text: "Вы успешно завершили разговор с Боссом и заняли свое рабочее место сетевого инженера. Лаборатория под вашим контролем.",
+                character: "",
+                type: "end"
+            }
+        };
+
+        let currentKey = "start";
+        const dialogueBox = document.getElementById("dialogue-box");
+
+        function updateScreen() {
+            const step = story[currentKey];
+            
+            document.getElementById("character-name").innerText = step.name;
+            document.getElementById("dialogue-text").innerText = step.text;
+
+            const charImg = document.getElementById("active-character");
+            if (step.character) {
+                charImg.src = step.character;
+                charImg.style.opacity = "1";
+            } else {
+                charImg.style.opacity = "0";
+            }
+
+            const choicesContainer = document.getElementById("choices-container");
+            choicesContainer.innerHTML = "";
+            
+            const hint = document.getElementById("click-hint");
+            hint.style.display = "none";
+            
+            dialogueBox.onclick = null;
+            dialogueBox.style.cursor = "default";
+
+            if (step.type === "question") {
+                step.choices.forEach(choice => {
+                    const button = document.createElement("button");
+                    button.className = "choice-btn";
+                    button.innerText = choice.text;
+                    button.onclick = (e) => {
+                        e.stopPropagation();
+                        currentKey = choice.nextStep;
+                        updateScreen();
+                    };
+                    choicesContainer.appendChild(button);
+                });
+            } else if (step.type === "dialogue") {
+                dialogueBox.style.cursor = "pointer";
+                hint.style.display = "block";
+                dialogueBox.onclick = () => {
+                    currentKey = step.nextStep;
+                    updateScreen();
+                };
+            } else if (step.type === "end") {
+                dialogueBox.style.cursor = "default";
+            }
+        }
+
+        window.onload = updateScreen;
+    </script>
+</body>
+</html>
