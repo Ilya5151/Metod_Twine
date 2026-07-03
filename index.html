@@ -24,7 +24,8 @@
             max-width: 1024px;
             height: 100%;
             max-height: 576px;
-            background-image: url('images/background_lab.png');
+            /* Убрали images/ */
+            background-image: url('background_lab.png');
             background-size: cover;
             background-position: center;
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
@@ -71,7 +72,7 @@
         }
 
         #dialogue-text {
-            font-size: 1.3em; /* Крупный и читаемый текст */
+            font-size: 1.3em;
             line-height: 1.5;
             margin-bottom: 15px;
         }
@@ -119,7 +120,8 @@
 
     <div id="game-container">
         <div id="character-container">
-            <img id="active-character" class="character" src="images/character_boss.png" alt="Персонаж">
+            /* Убрали images/ */
+            <img id="active-character" class="character" src="character_boss.png" alt="Персонаж">
         </div>
 
         <div id="dialogue-box">
@@ -135,18 +137,17 @@
             start: {
                 name: "Босс",
                 text: "Ну что, добро пожаловать в лабораторию. Прежде чем я доверю тебе пульт от сервера, устроим небольшую проверку. Готов?",
-                character: "images/character_boss.png",
+                character: "character_boss.png", /* Без папки */
                 type: "question",
                 choices: [
                     { text: "Готов, шеф! Спрашивайте.", nextStep: "q1" },
                     { text: "Постараюсь не ударить в грязь лицом...", nextStep: "q1" }
                 ]
             },
-            // ВОПРОС 1
             q1: {
                 name: "Босс",
                 text: "Первый вопрос, базовый. На каком уровне модели OSI работает обычный IP-адрес и маршрутизаторы?",
-                character: "images/character_boss.png",
+                character: "character_boss.png",
                 type: "question",
                 choices: [
                     { text: "На Канальном (Data Link, уровень 2)", nextStep: "q1_wrong" },
@@ -157,22 +158,21 @@
             q1_correct: {
                 name: "Босс",
                 text: "Верно! Сразу видно, что теорию не прогуливал. Ладно, усложняем задачу.",
-                character: "images/character_boss.png",
+                character: "character_boss.png",
                 type: "dialogue",
                 nextStep: "q2"
             },
             q1_wrong: {
                 name: "Босс",
                 text: "Мимо. Коммутаторы плачут в углу от такого ответа. Правильный ответ — Сетевой уровень. Но ладно, едем дальше.",
-                character: "images/character_boss.png",
+                character: "character_boss.png",
                 type: "dialogue",
                 nextStep: "q2"
             },
-            // ВОПРОС 2
             q2: {
                 name: "Босс",
                 text: "Что происходит в сети, когда один хост отправляет ARP-запрос, чтобы узнать MAC-адрес соседа?",
-                character: "images/character_boss.png",
+                character: "character_boss.png",
                 type: "question",
                 choices: [
                     { text: "Запрос отправляется направленно (Unicast) конкретному узлу", nextStep: "q2_wrong" },
@@ -182,22 +182,21 @@
             q2_correct: {
                 name: "Босс",
                 text: "Точно! Широковещательный запрос на `FF:FF:FF:FF:FF:FF`. Хорош. Финальный вопрос, на засыпку.",
-                character: "images/character_boss.png",
+                character: "character_boss.png",
                 type: "dialogue",
                 nextStep: "q3"
             },
             q2_wrong: {
                 name: "Босс",
                 text: "Эх, нет. Откуда же он знает, кому слать Unicast, если он только Пытается узнать MAC? Он кричит на всю сеть! Ладно, последний шанс.",
-                character: "images/character_boss.png",
+                character: "character_boss.png",
                 type: "dialogue",
                 nextStep: "q3"
             },
-            // ВОПРОС 3
             q3: {
                 name: "Босс",
                 text: "В чем главное концептуальное отличие протокола TCP от UDP?",
-                character: "images/character_boss.png",
+                character: "character_boss.png",
                 type: "question",
                 choices: [
                     { text: "TCP гарантирует доставку данных и сохраняет их порядок, а UDP просто шлет пакеты без оглядки.", nextStep: "q3_correct" },
@@ -207,22 +206,21 @@
             q3_correct: {
                 name: "Босс",
                 text: "Великолепно! Трёхэтапное рукопожатие, контроль потока... Ты действительно соображаешь.",
-                character: "images/character_boss.png",
+                character: "character_boss.png",
                 type: "dialogue",
                 nextStep: "final"
             },
             q3_wrong: {
                 name: "Босс",
                 text: "Всё с точностью до наоборот! UDP — это «выстрелил и забыл». Ладно, на практике доучишься, деваться нам некуда.",
-                character: "images/character_boss.png",
+                character: "character_boss.png",
                 type: "dialogue",
                 nextStep: "final"
             },
-            // ФИНАЛ
             final: {
                 name: "Босс",
                 text: "Что ж, экспресс-тест окончен. Забирай свой пропуск, подключайся к консоли и давай наводить здесь порядок. Добро пожаловать в команду!",
-                character: "images/character_boss.png",
+                character: "character_boss.png",
                 type: "dialogue",
                 nextStep: "real_end"
             },
